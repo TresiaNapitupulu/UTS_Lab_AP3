@@ -1,63 +1,53 @@
-#include <iostream>
-#include <string>
-using namespace std;
+#include <iostream>                                         // header file & library untuk i/0
+using namespace std;                                        // biar ga perlu nulis ::std
 
-string cekKartu(long nomorKartu) {
-    long kartuDiproses = nomorKartu;
-    int jumlah = 0;
-    int jumlahDigit = 0;
-    long pembagi = 10;
-    string hasil;
+  string jenis_kartu (string nomor_kartu) {                 //untuk menentukan jenis kartu berdasarkan no.kartunya
+    string tipe_kartu = "tidak tahu :) ";                   // output kalau jenis kartu invalid
+    int digit1 = nomor_kartu[0] - '0';                      // mengambil digit1 dari kartu & diubah ke integer
 
-    while (kartuDiproses > 0) {
-        int digitTerakhir = kartuDiproses % 10;
-        jumlah = jumlah + digitTerakhir;
-        kartuDiproses = kartuDiproses / 100;
-    }
+    // kondisi untuk menentukan jenis kartu berdasarkan digit1 dan panjang no. kartu
+    if ((digit1 == 5) && (nomor_kartu.length() == 16) && (nomor_kartu[1] >= '1' && nomor_kartu[1] <= '5')) {
+        return "mastercard"; }
+    else if (digit1 == 4 && (nomor_kartu.length() == 13 || nomor_kartu.length() == 16)) {
+        return "visa"; }
+    return tipe_kartu;                                      // akan kembali ke ("tidak tahu :) ") jika kondisi nya tidak sesuai
+  }
 
-    kartuDiproses = nomorKartu / 10;
-    while (kartuDiproses > 0) {
-        int digitTerakhir = kartuDiproses % 10;
-        int kaliDua = digitTerakhir * 2;
-        jumlah = jumlah + (kaliDua % 10) + (kaliDua / 10);
-        kartuDiproses = kartuDiproses / 100;
-    }
+  int hitung_checksum(string nomor_kartu) {                 // mengambil no.kartu lalu dihitung jumlah checksumnya menggunakkan algoritma luhn
+    int jumlah = 0;                                         // menyimpan total jumlah digit
+    bool ubah_angka = false;                                // untuk menentukan digitnya harus diubah/tidak
 
-    long temp = nomorKartu;
-    while (temp != 0) {
-        temp = temp / 10;
-        jumlahDigit++;
-    }
+    for (int i = nomor_kartu.length() - 1; i >= 0; i--){    // loop checksum, dimulai dari paling kanan no kartu
+        int digit = nomor_kartu[i] - '0';
+        if(ubah_angka) digit *= 2;                          // digit dikali 2
+        jumlah += digit / 10 + digit % 10;                  // total digit ditambahkan ke jumlah
+        ubah_angka = !ubah_angka; }                         //ubah jadi nilai kebalikan untuk mengubah nilai berikutnya
 
-    for (int i = 0; i < jumlahDigit - 2; i++) {
-        pembagi = pembagi * 10;
-    }
+    return jumlah;
+  }
+  //mengambil no kartu sebagai masukkan jika "true" maka no kartu memenuhi algoritma luhn, jika "false" maka tidak
+  bool algoritmaluhn(string nomor_kartu) {                           
+    int checksum = hitung_checksum(nomor_kartu);
+    return (checksum % 10 == 0); }
+  
+  int main() {                                              //eksekusi program dimulai
+    string nomor_kartu;                                     // mendeklarasikan tipe data, 'nomor_kartu' sebagai string
+    char pilih;                                             //mendeklarasikan tipe data, 'pilih' sebagai char
+  do {
+    system("cls");                                          // untuk membersihkan layar
+        cout << "masukkan no.Kartu : ";                     
+        cin >> nomor_kartu;                                 
 
-    int digit1 = nomorKartu / pembagi;
-    int digit2 = nomorKartu / (pembagi / 10);
+  string tipe_kartu = jenis_kartu (nomor_kartu);            // memanggil fungsi 'jenis_kartu' lalu disimpan ke 'tipe_kart' 
+    if (tipe_kartu != "tidak tahu :) ") {                   // jika jenis kartu ditemukan, kode akan dieksekusi
+        int checksum = hitung_checksum(nomor_kartu);        // jika berhasil ditemukan program akan menghitung checksum no kartu dengan fungsi 'hitung_checksum'
+        cout << "tipe kartu : " << tipe_kartu << endl;      // mencetak jenis kartu
+        cout << "no.Checksum : " << checksum << endl; }     // mencetak checksumnya
+    else {
+        cout << "no.Kartu invalid (coba lagi)" << endl; }   //jikalau jenis kartu tidak diketahui program akan mencetakk pesan ini
+    cout << "ingin memasukkan no.Kartu lagi? (y/n) ";       //pertanyaan untuk user, ketik (y/n)
+    cin >> pilih;
+    } while (pilih == 'y' || pilih == 'Y');                 //jika user mengetik 'y' || 'Y' program akan kembali ke baris pertama loop
 
-    if (jumlah % 10 == 0) {
-        if (digit1 == 4 && (jumlahDigit == 13 || jumlahDigit == 16)) {
-            hasil = "VISA";
-        } else if ((digit2 >= 51 && digit2 <= 55) && jumlahDigit == 16) {
-            hasil = "MASTERCARD";
-        } else {
-            hasil = "INVALID";
-        }
-    } else {
-        hasil = "INVALID";
-    }
-
-    return hasil;
-}
-
-int main() {
-    long nomorKartu;
-    cout << "Masukkan nomor kartu: ";
-    cin >> nomorKartu;
-
-    string hasil = cekKartu(nomorKartu);
-    cout << "Hasil: " << hasil << endl;
-
-    return 0;
-}
+  return 0;                                                 //eksekusi program telah selesai dan keluar dari fungsi utama
+  }
