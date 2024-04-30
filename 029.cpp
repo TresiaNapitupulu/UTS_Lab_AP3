@@ -2,15 +2,15 @@
 using namespace std;                                        // biar ga perlu nulis ::std
 
   string jenis_kartu (string nomor_kartu) {                 //untuk menentukan jenis kartu berdasarkan no.kartunya
-    string tipe_kartu = "tidak tahu :) ";                   // output kalau jenis kartu invalid
-    int digit1 = nomor_kartu[0] - '0';                      // mengambil digit1 dari kartu & diubah ke integer
+    string tipe_kartu = "tidak tahu ";                   
+    int digit1 = nomor_kartu[0] - '0';                     // mengambil digit1 dari kartu & diubah ke integer
 
     // kondisi untuk menentukan jenis kartu berdasarkan digit1 dan panjang no. kartu
     if ((digit1 == 5) && (nomor_kartu.length() == 16) && (nomor_kartu[1] >= '1' && nomor_kartu[1] <= '5')) {
         return "mastercard"; }
     else if (digit1 == 4 && (nomor_kartu.length() == 13 || nomor_kartu.length() == 16)) {
         return "visa"; }
-    return tipe_kartu;                                      // akan kembali ke ("tidak tahu :) ") jika kondisi nya tidak sesuai
+    return tipe_kartu;                                      
   }
 
   int hitung_checksum(string nomor_kartu) {                 // mengambil no.kartu lalu dihitung jumlah checksumnya menggunakkan algoritma luhn
@@ -39,7 +39,7 @@ using namespace std;                                        // biar ga perlu nul
         cin >> nomor_kartu;                                 
 
   string tipe_kartu = jenis_kartu (nomor_kartu);            // memanggil fungsi 'jenis_kartu' lalu disimpan ke 'tipe_kart' 
-    if (tipe_kartu != "tidak tahu :) ") {                   // jika jenis kartu ditemukan, kode akan dieksekusi
+    if (tipe_kartu != "tidak tahu ") {                     // jika jenis kartu ditemukan, kode akan dieksekusi
         int checksum = hitung_checksum(nomor_kartu);        // jika berhasil ditemukan program akan menghitung checksum no kartu dengan fungsi 'hitung_checksum'
         cout << "tipe kartu : " << tipe_kartu << endl;      // mencetak jenis kartu
         cout << "no.Checksum : " << checksum << endl; }     // mencetak checksumnya
